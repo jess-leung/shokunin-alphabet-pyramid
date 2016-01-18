@@ -1,5 +1,6 @@
 # shokunin-alphabet-pyramid
-Alphabet pyramid challenge
+Alphabet pyramid challenge, solution by Arvin & Jessie 
+
 
 # To run
 Only need bash. 
