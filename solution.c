@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <ctype.h>
+#include <regex.h> 
 
 int getLetterPosition(char letter) {
 	return letter - 'A';
@@ -16,25 +18,47 @@ int getNumberOfMiddleSpace(char letter) {
 }
 
 void printLine(char** result, char letter, char input) { 
-	char line[100] = "";
+	char line[200] = "";
+	int position = 0;
 	int numberOfLeftSpaces = getNumberOfLeftSpaces(letter, input);
 	for (int i = 0; i < numberOfLeftSpaces; i++) {
-		line[i] = ' ';
+		line[position++] = ' ';
 	}
-	line[numberOfLeftSpaces] = letter;
+	line[position++] = letter;
 	int numberOfMiddleSpace = getNumberOfMiddleSpace(letter);
 	if (numberOfMiddleSpace > 0) {
 		numberOfLeftSpaces++;
 		for (int i = 0; i < numberOfMiddleSpace; i++) {
-			line[numberOfLeftSpaces + i] = ' ';
+			line[position++] = ' ';
 		}
-		line[numberOfLeftSpaces + numberOfMiddleSpace] = letter; 
+		line[position++] = letter; 
 	}
+	line[position++] = '\n';
 	*result = line;
 }
 
-void makeDiamond(char** result, char letter) { 
-	char str[80] = "";
+void makeDiamond(char** result, char* letters) { 
+	char str[10000] = "";
+	char *line;
+	regex_t regex;
+	regcomp(&regex, "^[a-zA-Z]{1,1}$", REG_EXTENDED);
+	int regexMatchResult = regexec(&regex, letters, 0, NULL, 0);
+	if (regexMatchResult == 1) {
+		*result = "Invalid character";
+		return;
+	}
+
+	char letter = toupper(letters[0]);
+	for (int i = 'A'; i < letter; i++) {
+		printLine(&line, i, letter);
+		strcat(str, line);
+	}
+
+	for (int i = letter; i >= 'A'; i--) {
+		printLine(&line, i, letter);
+		strcat(str, line);
+	}
+
 	*result = str; 
 }
 
@@ -74,7 +98,7 @@ void shouldReturnSingleAGivenAForA() {
 
 	printLine(&result, 'A', 'B');
 	
-	assert(strcmp(result, " A") == 0);
+	assert(strcmp(result, " A\n") == 0);
 }
 
 void shouldReturnBSpaceBGivenBForB() {
@@ -82,7 +106,48 @@ void shouldReturnBSpaceBGivenBForB() {
 
 	printLine(&result, 'B', 'B');
 	
-	assert(strcmp(result, "B B") == 0);
+	assert(strcmp(result, "B B\n") == 0);
+}
+
+void shouldReturnCSpaceSpaceSpaceCGivenDForC() {
+	char *result; 
+
+	printLine(&result, 'C', 'D');
+
+	assert(strcmp(result, " C   C\n") == 0);
+}
+
+void shouldMakeADimamondGivenA() {
+	char *result;
+
+	makeDiamond(&result, "A");
+
+	assert(strcmp(result, "A\n") == 0);
+}
+
+void shouldMakeADimamondGivenD() {
+	char *result;
+
+	makeDiamond(&result, "D");
+
+	// printf("%s", result);
+	assert(strcmp(result, "   A\n  B B\n C   C\nD     D\n C   C\n  B B\n   A\n") == 0);
+}
+
+void shouldMakeADimamondGivend() {
+	char *result;
+
+	makeDiamond(&result, "d");
+
+	assert(strcmp(result, "   A\n  B B\n C   C\nD     D\n C   C\n  B B\n   A\n") == 0);
+}
+
+void shouldNotMakeADimamondGivenSpecialCharacter() {
+	char *result;
+
+	makeDiamond(&result, "*");
+
+	assert(strcmp(result, "Invalid character") == 0);
 }
 
 // MAIN
@@ -95,9 +160,14 @@ int main(int argc, char **argv){
 		shouldReturnOneNumberOfMiddleSpacesForB();
 		shouldReturnSingleAGivenAForA();
 		shouldReturnBSpaceBGivenBForB();
+		shouldReturnCSpaceSpaceSpaceCGivenDForC();
+		shouldMakeADimamondGivenA();
+		shouldMakeADimamondGivenD();
+		shouldMakeADimamondGivend();
+		shouldNotMakeADimamondGivenSpecialCharacter();
 	} else {
 		char *result;
-		makeDiamond(&result, argv[1][0]);
+		makeDiamond(&result, argv[1]);
     	printf("%s", result);
 	}
     return 0;
