@@ -130,7 +130,6 @@ void shouldMakeADimamondGivenD() {
 
 	makeDiamond(&result, "D");
 
-	// printf("%s", result);
 	assert(strcmp(result, "   A\n  B B\n C   C\nD     D\n C   C\n  B B\n   A\n") == 0);
 }
 
@@ -172,4 +171,3 @@ int main(int argc, char **argv){
 	}
     return 0;
 }
-
