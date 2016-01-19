@@ -151,27 +151,27 @@ void shouldNotMakeADimamondGivenSpecialCharacter() {
 
 // MAIN
 int main(int argc, char **argv){
-    if (argc > 1) {
-    	if (strcmp(argv[1], "test") == 0) {
-    		shouldReturnZeroNumberOfSpacesForCGivenC();
-    		shouldReturnOneNumberOfSpacesForCGivenB();
-    		shouldReturnTwoNumberOfSpacesForCGivenA();
-    		shouldReturnThreeNumberOfMiddleSpacesForC();
-    		shouldReturnOneNumberOfMiddleSpacesForB();
-    		shouldReturnSingleAGivenAForA();
-    		shouldReturnBSpaceBGivenBForB();
-    		shouldReturnCSpaceSpaceSpaceCGivenDForC();
-    		shouldMakeADimamondGivenA();
-    		shouldMakeADimamondGivenD();
-    		shouldMakeADimamondGivend();
-    		shouldNotMakeADimamondGivenSpecialCharacter();
-    	} else {
-    		char *result;
-    		makeDiamond(&result, argv[1]);
-            printf("%s", result);
-        }
-	} else {
+    if (argc < 2) {
         printf("%s\n", "No input specified");
+        return 1;
+    }
+	if (strcmp(argv[1], "test") == 0) {
+		shouldReturnZeroNumberOfSpacesForCGivenC();
+		shouldReturnOneNumberOfSpacesForCGivenB();
+		shouldReturnTwoNumberOfSpacesForCGivenA();
+		shouldReturnThreeNumberOfMiddleSpacesForC();
+		shouldReturnOneNumberOfMiddleSpacesForB();
+		shouldReturnSingleAGivenAForA();
+		shouldReturnBSpaceBGivenBForB();
+		shouldReturnCSpaceSpaceSpaceCGivenDForC();
+		shouldMakeADimamondGivenA();
+		shouldMakeADimamondGivenD();
+		shouldMakeADimamondGivend();
+		shouldNotMakeADimamondGivenSpecialCharacter();
+	} else {
+		char *result;
+		makeDiamond(&result, argv[1]);
+        printf("%s", result);
     }
     return 0;
 }
